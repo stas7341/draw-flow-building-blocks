@@ -102,52 +102,26 @@
       }
       return text;
     }
-    function WebSocketSave(msg) {
-      let response;
-      if ("WebSocket" in window) {
-        // Let us open a web socket
-        var ws = new WebSocket("ws://0.0.0.0");
-
-        ws.onopen = function () {
-          ws.send(msg);
-        };
-
-        ws.onmessage = function (evt) {
-          response = evt.data;
-          console.log(response);
-        };
-
-        ws.onclose = function () {
-          console.log("socket closed!")
-        }
-      } else {
-        alert("WebSocket NOT supported by your Browser!");
+    function WebSave(msg) {
+      let options = {
+        method: 'POST',
+        headers: {
+          "Content-type": "application/json; charset=UTF-8"
+        },
+        body: msg
       }
-      return response;
-    }
-    function WebSocketLoad(msg) {
-        let response;
-        if ("WebSocket" in window) {
-          // Let us open a web socket
-          var ws = new WebSocket("ws://0.0.0.0");
-
-          ws.onopen = function () {
-            ws.send(msg);
-          };
-
-          ws.onmessage = function (evt) {
-            response = evt.data;
-            console.log(response);
-            editor.import(JSON.parse(response))
-          };
-
-          ws.onclose = function () {
-            console.log("socket closed!")
-          }
+      const promise = fetch('/api/save', options);
+      promise.then(response => {
+        if(!response.ok){
+          console.error(response)
         } else {
-          alert("WebSocket NOT supported by your Browser!");
+          return alert('Done');
         }
-        return response;
+      }).then(result => {
+        console.log(result);
+      })
+    }
+    function WebLoad(msg) {
     }
     async function saveData(data) {
       const fileName = askFileName();
@@ -156,7 +130,7 @@
       return new Promise(async () => {
         const msg = {"action": "saveFlowConfig", "payload": {"flowName": fileName, "data": editor.export()}};
         console.log(msg);
-        WebSocketSave(JSON.stringify(msg));
+        WebSave(JSON.stringify(msg));
       });
     }
     async function reloadData() {
@@ -167,7 +141,7 @@
         editor.clearModuleSelected();
         const msg = {"action": "loadFlowConfig", "payload": {"flowName":fileName, "data":editor.export()}};
         console.log(msg);
-        WebSocketLoad(JSON.stringify(msg));
+        WebLoad(JSON.stringify(msg));
       });
     }
 

@@ -20,9 +20,11 @@
       "forceConsistentCasingInFileNames": true,
       "alwaysStrict": true
     },
+    "assets": ["./src/public/*"],
     "include": [
       "./src/**/*.ts",
       "./src/**/*.json",
+      "./src/public",
       "./.env.local"
     ]
   }

@@ -9,7 +9,7 @@ module.exports = {
                 "ip": process.env.HOST || "0.0.0.0",
                 "port": process.env.PORT || "80",
                 "subscriber_ttl_sec": process.env.SUBSCRIBER_TTL_SEC || 300,
-                "basePath": process.env.BASE_PATH || '/iq/v2/api/',
+                "basePath": process.env.BASE_PATH || '/api',
         },
         "amqp": {
                 "username": process.env.RABBIT_USER || "guest",

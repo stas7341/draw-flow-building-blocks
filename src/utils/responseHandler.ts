@@ -27,3 +27,7 @@ export const sendBaseResponse = (res, code = 200, data = {}) => {
 export const sendJsonResponse = (res, code = 200, data = {}) => {
         res.status(code).json(data);
 };
+
+export const sendOK = (res) => {
+        res.send();
+};

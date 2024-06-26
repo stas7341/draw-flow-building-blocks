@@ -6,19 +6,19 @@
     "start-ts": "PROJECT_ENV=local ts-node ./src/app.ts",
     "start": "PROJECT_ENV=local node ./dist/app.js",
     "debug": "tsc; NODE_ENV=debug DEBUG=* node dist/app.js --unhandled-rejections=strict",
-    "build": "tsc --alwaysStrict ",
+    "build": "npm run copy-files && tsc --alwaysStrict ",
     "load-modules": "npm i --also-dev",
     "prod-load-modules": "npm i",
     "dev": "PROJECT_ENV=dev ts-node src/app.ts",
     "testj": "PROJECT_ENV=local jest --config=./src/tests/jest.config.ts",
-    "test": "tsc"
+    "test": "tsc",
+    "copy-files": "cp -rv ./src/public ./dist"
   },
   "keywords": [],
   "author": "Stas M.",
   "license": "ISC",
   "dependencies": {
-    "@asmtechno/iqlib": "^1.0.5",
-    "@asmtechno/service-lib": "^1.0.13",
+    "@asmtechno/service-lib": "^1.0.14",
     "auto-version-js": "^0.3.10",
     "dotenv": "^16.4.5",
     "express-validator": "^7.1.0",

@@ -1,4 +1,4 @@
-import {Logger, LogLevel, Message} from "service-libs";
+import {Logger, LogLevel, Message} from "@asmtechno/service-lib";
 import fs from "fs";
 export const log = (msg: string, level: LogLevel = LogLevel.info, metadata: any = undefined) =>
     Logger.getInstance().log(`handlingSaveConfig::` + msg, level, metadata);

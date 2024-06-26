@@ -17,9 +17,6 @@ export const middlewares = (app, basePath) => {
     app.use(errorHandler);
     app.use(basePath, httpRoute);
     app.use(compression());
-
-    app.get('/', baseRoute);
-    app.all('/health', (req, res) => sendBaseResponse(res, 200));
 };
 
 export const baseRoute = (req, res) =>

@@ -4,10 +4,16 @@ import validator from '../utils/inputValidators';
 
 const router = express.Router();
 
-router.post(
-    '/test/:queueName',
+router.all(
+    '/test',
     validator.validationHandler,
     HttpController.manualTest
+);
+
+router.post(
+    '/save',
+    validator.validationHandler,
+    HttpController.saveFlow
 );
 
 export default router;
