@@ -122,6 +122,21 @@
       })
     }
     function WebLoad(msg) {
+      let options = {
+        method: 'GET',
+        headers: {
+          "Content-type": "application/json; charset=UTF-8"
+        },
+        body: msg
+      }
+      const promise = fetch('/api/load', options);
+      promise.then(response => {
+        if(!response.ok){
+          console.error(response)
+        }
+      }).then(result => {
+        alert(result);
+      })
     }
     async function saveData(data) {
       const fileName = askFileName();

@@ -16,4 +16,10 @@ router.post(
     HttpController.saveFlow
 );
 
+router.get(
+    '/load',
+    validator.validationHandler,
+    HttpController.loadFlow
+);
+
 export default router;

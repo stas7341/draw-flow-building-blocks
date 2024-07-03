@@ -1,7 +1,10 @@
-import {amqpService, Logger, LogLevel} from "@asmtechno/service-lib";
+import {amqpService, Logger, LogLevel, Message} from "@asmtechno/service-lib";
 import express from "express";
 import {baseRoute, middlewares} from "./middleware/baseRoute";
+import { NodeFlow } from "./models/flow";
+import { NodeLog } from "./models/nodeLog";
 import httpRoute from "./routes/http.route";
+import { FlowManagerService } from "./services/flowManager";
 import { sendBaseResponse } from "./utils/responseHandler";
 
 const log = (msg: string, level: LogLevel = LogLevel.info, metadata:any = undefined) =>
@@ -23,6 +26,7 @@ export const boot = async() => {
     const app = express();
     const port = config["app"].port;
     middlewares(app, config["app"].basePath);
+
     app.use(express.static(path.join(__dirname, 'public')));
     app.use('/api', httpRoute);
     app.get('/drawflow', function(req, res) {
@@ -36,5 +40,12 @@ export const boot = async() => {
         Logger.getInstance().log(`${app.get('env')}: server App listening on PORT ${port}...`, LogLevel.info)
     );
     Logger.getInstance().log('IQ server started', LogLevel.info, config);
+
+
+    const flowExample = new NodeFlow();
+    flowExample.startNode = new NodeLog();
+    flowExample.startNode.addConnection(new NodeLog());
+    flowExample.startNode.addConnection(new NodeLog());
+    FlowManagerService.getInstance().execFlow(flowExample, new Message('test', {}));
 }
 
