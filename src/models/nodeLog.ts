@@ -9,8 +9,9 @@ export class NodeLog extends NodeBuildingBlock {
         super(name);
         this.outputConnection = new Array<NodeBuildingBlock>();
     }
-    exec(msg: Message) {
+    async exec(msg: Message) {
         log(`exec::${this.nodeName}::${this.uid}`, LogLevel.debug, msg);
+        await GeneralUtils.waitTimeout(20);
         const res = new Message('result', {data: [`nodeLog::${this.nodeName}::${this.uid}`]});
         res.payload.data.push(msg.payload.data.toString());
         return res;
@@ -26,8 +27,9 @@ export class NodeLog2 extends NodeBuildingBlock {
         super(name);
         this.outputConnection = new Array<NodeBuildingBlock>();
     }
-    exec(msg: Message) {
+    async exec(msg: Message) {
         log(`exec2::${this.nodeName}::${this.uid}`, LogLevel.debug, msg);
+        await GeneralUtils.waitTimeout(5);
         const res = new Message('result2', {data: [`nodeLog2::${this.nodeName}::${this.uid}`]});
         res.payload.data.push(msg.payload.data.toString());
         return res;
@@ -43,8 +45,9 @@ export class NodeLog3 extends NodeBuildingBlock {
         super(name);
         this.outputConnection = new Array<NodeBuildingBlock>();
     }
-    exec(msg: Message) {
+    async exec(msg: Message) {
         log(`exec3::${this.nodeName}::${this.uid}`, LogLevel.debug, msg);
+        await GeneralUtils.waitTimeout(10);
         const res = new Message('result3', {data: [`nodeLog3::${this.nodeName}::${this.uid}`]});
         res.payload.data.push(msg.payload.data.toString());
         return res;

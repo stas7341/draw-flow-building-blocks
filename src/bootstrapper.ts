@@ -58,6 +58,6 @@ export const boot = async() => {
     node22.addConnection(node33);
     node22.addConnection(node34);
 
-    FlowManagerService.getInstance().execFlow(flowExample, new Message('test', {data: 'start'}));
+    await FlowManagerService.getInstance().execFlow(flowExample, new Message('test', {data: 'start'}));
 }
 

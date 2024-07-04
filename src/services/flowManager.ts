@@ -7,10 +7,10 @@ export interface FlowManagerConfig {
 }
 
 namespace flowEngine {
-    export function* inOrderTraversal(node: NodeBuildingBlock, msg) {
+    export async function* inOrderTraversal(node: NodeBuildingBlock, msg) {
         if (!node) return;
 
-        const res = yield node.exec(msg);
+        const res = yield await node.exec(msg);
         for (const output of node.outputConnection) {
             yield* inOrderTraversal(output, res);
         }
@@ -40,12 +40,12 @@ export class FlowManagerService {
     }
 
 
-    execFlow(flow: NodeFlow, msg: Message) {
+    async execFlow(flow: NodeFlow, msg: Message) {
         const generator = flowEngine.inOrderTraversal(flow.startNode, msg);
-        let result = generator.next(msg);
+        let result = await generator.next(msg);
         console.log(result.value)
         while (result.done === false) {
-            result = generator.next(result.value);
+            result = await generator.next(result.value);
             console.log(result.value)
         }
     }
