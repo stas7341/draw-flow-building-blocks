@@ -2,7 +2,7 @@ import {amqpService, Logger, LogLevel, Message} from "@asmtechno/service-lib";
 import express from "express";
 import {baseRoute, middlewares} from "./middleware/baseRoute";
 import { NodeFlow } from "./models/flow";
-import { NodeLog } from "./models/nodeLog";
+import { NodeLog, NodeLog2, NodeLog3 } from "./models/nodeLog";
 import httpRoute from "./routes/http.route";
 import { FlowManagerService } from "./services/flowManager";
 import { sendBaseResponse } from "./utils/responseHandler";
@@ -43,9 +43,21 @@ export const boot = async() => {
 
 
     const flowExample = new NodeFlow();
-    flowExample.startNode = new NodeLog();
-    flowExample.startNode.addConnection(new NodeLog());
-    flowExample.startNode.addConnection(new NodeLog());
-    FlowManagerService.getInstance().execFlow(flowExample, new Message('test', {}));
+    const node1 = new NodeLog('node1');
+    flowExample.startNode = node1;
+    const node21 = new NodeLog2('node21');
+    const node22 = new NodeLog2('node22');
+    node1.addConnection(node21);
+    node1.addConnection(node22);
+    const node31 = new NodeLog3('node31');
+    const node32 = new NodeLog3('node32');
+    const node33 = new NodeLog3('node33');
+    const node34 = new NodeLog3('node34');
+    node21.addConnection(node31);
+    node22.addConnection(node32);
+    node22.addConnection(node33);
+    node22.addConnection(node34);
+
+    FlowManagerService.getInstance().execFlow(flowExample, new Message('test', {data: 'start'}));
 }
 
