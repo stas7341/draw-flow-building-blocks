@@ -1,13 +1,13 @@
 import {GeneralUtils, Logger, LogLevel, Message } from "@asmtechno/service-lib";
-import { NodeBuildingBlock } from "./nodeBuildingBlock";
+import { NodeFlow } from "./flow";
+import { NodeBuildingBlock, NodeType } from "./nodeBuildingBlock";
 
 const log = (msg: string, level: LogLevel = LogLevel.info, metadata:any = undefined) =>
     Logger.getInstance().log(msg, level, metadata);
 
 export class NodeLog extends NodeBuildingBlock {
-    constructor(name: string) {
-        super(name);
-        this.outputConnection = new Array<NodeBuildingBlock>();
+    constructor(name: string, type: NodeType, flow: NodeFlow) {
+        super(name, type, flow);
     }
     async exec(msg: Message) {
         log(`exec::${this.nodeName}::${this.uid}`, LogLevel.debug, msg);
@@ -20,13 +20,13 @@ export class NodeLog extends NodeBuildingBlock {
     addConnection(node: NodeBuildingBlock) {
         this.outputConnection.push(node);
     }
+
+    outputResolver(msg: Message): NodeBuildingBlock[] {
+        return this.outputConnection;
+    }
 }
 
 export class NodeLog2 extends NodeBuildingBlock {
-    constructor(name: string) {
-        super(name);
-        this.outputConnection = new Array<NodeBuildingBlock>();
-    }
     async exec(msg: Message) {
         log(`exec2::${this.nodeName}::${this.uid}`, LogLevel.debug, msg);
         await GeneralUtils.waitTimeout(5);
@@ -38,13 +38,13 @@ export class NodeLog2 extends NodeBuildingBlock {
     addConnection(node: NodeBuildingBlock) {
         this.outputConnection.push(node);
     }
+
+    outputResolver(msg: Message): NodeBuildingBlock[] {
+        return this.outputConnection;
+    }
 }
 
 export class NodeLog3 extends NodeBuildingBlock {
-    constructor(name: string) {
-        super(name);
-        this.outputConnection = new Array<NodeBuildingBlock>();
-    }
     async exec(msg: Message) {
         log(`exec3::${this.nodeName}::${this.uid}`, LogLevel.debug, msg);
         await GeneralUtils.waitTimeout(10);
@@ -55,5 +55,9 @@ export class NodeLog3 extends NodeBuildingBlock {
 
     addConnection(node: NodeBuildingBlock) {
         this.outputConnection.push(node);
+    }
+
+    outputResolver(msg: Message): NodeBuildingBlock[] {
+        return this.outputConnection;
     }
 }

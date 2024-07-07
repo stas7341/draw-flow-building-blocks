@@ -1,13 +1,34 @@
 import {GeneralUtils, Message } from "@asmtechno/service-lib";
+import { NodeFlow } from "./flow";
+
+export enum NodeType {
+    START_FLOW,
+    CONDITION,
+    RETURN_VALUE,
+    RETURN_VOID,
+    END_FLOW,
+    UNDEFINED
+}
 
 export abstract class NodeBuildingBlock {
-    nodeName!: string;
-    uid!: string;
-    outputConnection!: NodeBuildingBlock[];
+    readonly nodeName: string;
+    readonly uid: string;
+    readonly nodeFlow: NodeFlow;
+    readonly nodeType: NodeType;
+    protected outputConnection!: NodeBuildingBlock[];
     abstract exec(msg: Message);
+    abstract outputResolver(msg: Message): NodeBuildingBlock[];
     abstract addConnection(node: NodeBuildingBlock);
-    constructor(name: string) {
+    constructor(name: string, type: NodeType, flow: NodeFlow) {
         this.nodeName = name;
+        this.nodeFlow = flow;
+        this.nodeType = type;
         this.uid = GeneralUtils.newGuid();
+        this.outputConnection = new Array<NodeBuildingBlock>();
+        if(!flow)
+            throw new Error(`flow object is mandatory`);
+        if(type === NodeType.UNDEFINED)
+            throw new Error(`node type is mandatory`);
+        flow.repoNodeBuildingBlocks.set(name, this);
     }
 }
