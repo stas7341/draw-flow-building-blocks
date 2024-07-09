@@ -40,42 +40,42 @@ export const boot = async() => {
     app.listen(port, () =>
         Logger.getInstance().log(`${app.get('env')}: server App listening on PORT ${port}...`, LogLevel.info)
     );
-    Logger.getInstance().log('IQ server started', LogLevel.info, config);
+    Logger.getInstance().log('server started', LogLevel.info, config);
 
     const flowExample = FlowManagerService.getInstance().createFlow('test', {});
 
     flowExample.on(FLOW_EVENTS.LOG, (...args: any[]) => {
         const [message, logLevel, metadata] = args;
-        log(`flow:log:${message}`, logLevel, metadata);
+        log(`log:${message}`, logLevel, metadata);
     });
 
     flowExample.on(FLOW_EVENTS.STARTED, (...args: any[]) => {
         const [message, logLevel, metadata] = args;
-        log(`flow:started:${message}`, logLevel, metadata);
+        log(`started:${message}`, logLevel, metadata);
     });
     flowExample.on(FLOW_EVENTS.NODE_MOVED, (...args: any[]) => {
         const [message, logLevel, metadata] = args;
-        log(`flow:moved:${message}`, logLevel, metadata);
+        log(`moved:${message}`, logLevel, metadata);
     });
     flowExample.on(FLOW_EVENTS.ENDED, (...args: any[]) => {
         const [message, logLevel, metadata] = args;
-        log(`flow:ended:${message}`, logLevel, metadata);
+        log(`ended:${message}`, logLevel, metadata);
     });
     flowExample.on(FLOW_EVENTS.ERROR, (...args: any[]) => {
         const [message, logLevel, metadata] = args;
-        log(`flow:moved:${message}`, LogLevel.error, metadata);
+        log(`moved:${message}`, LogLevel.error, metadata);
     });
 
     flowExample.globalEnv.set('temp', new Message('test', {data: 'start'}));
     flowExample.globalEnv.set('config', config);
 
     setTimeout(() => FlowManagerService.getInstance().execFlow(flowExample, new Message('test1', {data: 'start1'})), 0);
-    setTimeout(() => FlowManagerService.getInstance().execFlow(flowExample, new Message('test2', {data: 'start2'})), 0);
+    //setTimeout(() => FlowManagerService.getInstance().execFlow(flowExample, new Message('test2', {data: 'start2'})), 0);
 
     log(`all nodes in the flow`, LogLevel.debug,
         {
             flow: flowExample.flowName,
-            nodesList: Array.from(flowExample.repoNodeBuildingBlocks, ([name, value]) => name)
+            nodesList: Array.from(flowExample.getAllNode(), ([name, value]) => name)
         });
 }
 

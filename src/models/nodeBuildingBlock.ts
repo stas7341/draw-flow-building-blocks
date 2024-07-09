@@ -1,4 +1,5 @@
-import {GeneralUtils, Message } from "@asmtechno/service-lib";
+import EventEmitter from "node:events";
+import {GeneralUtils, LogLevel, Message } from "@asmtechno/service-lib";
 import { NodeFlow } from "./flow";
 
 export enum NodeType {
@@ -10,7 +11,7 @@ export enum NodeType {
     UNDEFINED
 }
 
-export abstract class NodeBuildingBlock {
+export abstract class NodeBuildingBlock extends EventEmitter{
     readonly nodeName: string;
     readonly uid: string;
     readonly nodeFlow: NodeFlow;
@@ -20,6 +21,7 @@ export abstract class NodeBuildingBlock {
     abstract outputResolver(msg: Message): NodeBuildingBlock[];
     abstract addConnection(node: NodeBuildingBlock);
     constructor(name: string, type: NodeType, flow: NodeFlow) {
+        super();
         this.nodeName = name;
         this.nodeFlow = flow;
         this.nodeType = type;
@@ -29,6 +31,10 @@ export abstract class NodeBuildingBlock {
             throw new Error(`flow object is mandatory`);
         if(type === NodeType.UNDEFINED)
             throw new Error(`node type is mandatory`);
-        flow.repoNodeBuildingBlocks.set(name, this);
+        flow.setNode(this);
+    }
+
+    protected log(msg: string, level: LogLevel = LogLevel.info, metadata?: any) {
+        this.emit('LOG', msg, level, metadata);
     }
 }

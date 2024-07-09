@@ -28,7 +28,7 @@ export interface INodeFlow {
     startNode: NodeBuildingBlock;
     exec(msg: Message, executionId: string);
     globalEnv: Map<string, any>;
-    repoNodeBuildingBlocks: Map<string, NodeBuildingBlock>;
+    getAllNode();
     on(event: FLOW_EVENTS, listener: Function): this;
 }
 
@@ -36,7 +36,7 @@ export class NodeFlow extends EventEmitter implements INodeFlow {
     readonly flowName!: string;
     readonly uid: string;
     startNode!: NodeBuildingBlock;
-    repoNodeBuildingBlocks = new Map<string, NodeBuildingBlock>();
+    private listNodes = new Map<string, NodeBuildingBlock>();
     globalEnv = new Map<string, any>();
     constructor(name) {
         super();
@@ -47,17 +47,29 @@ export class NodeFlow extends EventEmitter implements INodeFlow {
         this.emit(FLOW_EVENTS.LOG, msg, level, metadata);
     }
 
+    setNode(node: NodeBuildingBlock) {
+        this.listNodes.set(node.uid, node);
+        node.on(FLOW_EVENTS.LOG, (...args: any[]) => {
+            const [message, logLevel, metadata] = args;
+            this.emit(FLOW_EVENTS.LOG, message, logLevel, metadata);
+        });
+    }
+
+    getAllNode() {
+        return this.listNodes;
+    }
+
     async exec(msg: Message, executionId: string) {
-        this.emit(FLOW_EVENTS.STARTED, `${this.flowName}::${this.uid}`, LogLevel.info, {uid: this.uid, executionId});
+        this.emit(FLOW_EVENTS.STARTED, `flow::${this.flowName}`, LogLevel.info, {uid: this.uid, executionId});
         msg.payload.executionId = executionId;
         const generator = flowEngine.inOrderTraversal(this.startNode, msg);
         let result = await generator.next(msg);
         while (result.done === false) {
             const inputMsg = Message.clone(result.value);
             inputMsg.payload.executionId = executionId;
-            this.emit(FLOW_EVENTS.NODE_MOVED, result.value, LogLevel.debug, {uid: this.uid, executionId});
+            this.emit(FLOW_EVENTS.NODE_MOVED, `flow::${this.flowName}`, LogLevel.debug, {uid: this.uid, executionId, result: result.value});
             result = await generator.next(inputMsg);
         }
-        this.emit(FLOW_EVENTS.ENDED, result.value || '', LogLevel.info, {uid: this.uid, executionId});
+        this.emit(FLOW_EVENTS.ENDED, `flow::${this.flowName}`, LogLevel.info, {uid: this.uid, executionId});
     };
 }

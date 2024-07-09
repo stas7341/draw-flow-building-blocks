@@ -26,11 +26,11 @@ export class FlowManagerService {
     async init(config: FlowManagerConfig): Promise<boolean> {
         return true;
     }
-    
+
     createFlow(flowName: string, flowJSON: object): INodeFlow {
         // test only
         const flowExample = new NodeFlow('flow1');
-        const node1 = new NodeLog('node1', NodeType.RETURN_VALUE, flowExample);
+        const node1 = new NodeLog(flowExample);
         flowExample.startNode = node1;
         const node21 = new NodeLog2('node21', NodeType.RETURN_VALUE, flowExample);
         const node22 = new NodeLog2('node22', NodeType.RETURN_VALUE, flowExample);
@@ -44,7 +44,7 @@ export class FlowManagerService {
         node22.addConnection(node32);
         node22.addConnection(node33);
         node22.addConnection(node34);
-        
+
         return flowExample as INodeFlow;
     }
 
