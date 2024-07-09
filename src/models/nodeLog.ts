@@ -11,7 +11,7 @@ export class NodeLog extends NodeBuildingBlock {
     }
     async exec(msg: Message) {
         log(`exec::${this.nodeName}::${this.uid}`, LogLevel.debug, msg);
-        await GeneralUtils.waitTimeout(20);
+        await GeneralUtils.waitTimeout(Math.floor(Math.random() * 5) * 1000);
         const res = new Message('result', {data: [`nodeLog::${this.nodeName}::${this.uid}`]});
         res.payload.data.push(msg.payload.data.toString());
         return res;

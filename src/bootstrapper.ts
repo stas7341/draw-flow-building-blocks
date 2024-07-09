@@ -1,7 +1,7 @@
 import {amqpService, Logger, LogLevel, Message} from "@asmtechno/service-lib";
 import express from "express";
 import {baseRoute, middlewares} from "./middleware/baseRoute";
-import { NodeFlow } from "./models/flow";
+import {FLOW_EVENTS, NodeFlow } from "./models/flow";
 import { NodeType } from "./models/nodeBuildingBlock";
 import { NodeLog, NodeLog2, NodeLog3 } from "./models/nodeLog";
 import httpRoute from "./routes/http.route";
@@ -24,7 +24,6 @@ export const boot = async() => {
         log(`amqp::${message}`, logLevel, metadata);
     });
 
-    /*
     const app = express();
     const port = config["app"].port;
     middlewares(app, config["app"].basePath);
@@ -42,27 +41,36 @@ export const boot = async() => {
         Logger.getInstance().log(`${app.get('env')}: server App listening on PORT ${port}...`, LogLevel.info)
     );
     Logger.getInstance().log('IQ server started', LogLevel.info, config);
-*/
 
-    const flowExample = new NodeFlow('flow1');
+    const flowExample = FlowManagerService.getInstance().createFlow('test', {});
+
+    flowExample.on(FLOW_EVENTS.LOG, (...args: any[]) => {
+        const [message, logLevel, metadata] = args;
+        log(`flow:log:${message}`, logLevel, metadata);
+    });
+
+    flowExample.on(FLOW_EVENTS.STARTED, (...args: any[]) => {
+        const [message, logLevel, metadata] = args;
+        log(`flow:started:${message}`, logLevel, metadata);
+    });
+    flowExample.on(FLOW_EVENTS.NODE_MOVED, (...args: any[]) => {
+        const [message, logLevel, metadata] = args;
+        log(`flow:moved:${message}`, logLevel, metadata);
+    });
+    flowExample.on(FLOW_EVENTS.ENDED, (...args: any[]) => {
+        const [message, logLevel, metadata] = args;
+        log(`flow:ended:${message}`, logLevel, metadata);
+    });
+    flowExample.on(FLOW_EVENTS.ERROR, (...args: any[]) => {
+        const [message, logLevel, metadata] = args;
+        log(`flow:moved:${message}`, LogLevel.error, metadata);
+    });
+
     flowExample.globalEnv.set('temp', new Message('test', {data: 'start'}));
     flowExample.globalEnv.set('config', config);
-    const node1 = new NodeLog('node1', NodeType.RETURN_VALUE, flowExample);
-    flowExample.startNode = node1;
-    const node21 = new NodeLog2('node21', NodeType.RETURN_VALUE, flowExample);
-    const node22 = new NodeLog2('node22', NodeType.RETURN_VALUE, flowExample);
-    node1.addConnection(node21);
-    node1.addConnection(node22);
-    const node31 = new NodeLog3('node31', NodeType.RETURN_VALUE, flowExample);
-    const node32 = new NodeLog3('node32', NodeType.RETURN_VALUE, flowExample);
-    const node33 = new NodeLog3('node33', NodeType.RETURN_VALUE, flowExample);
-    const node34 = new NodeLog3('node34', NodeType.RETURN_VALUE, flowExample);
-    node21.addConnection(node31);
-    node22.addConnection(node32);
-    node22.addConnection(node33);
-    node22.addConnection(node34);
 
-    await FlowManagerService.getInstance().execFlow(flowExample, new Message('test', {data: 'start'}));
+    setTimeout(() => FlowManagerService.getInstance().execFlow(flowExample, new Message('test1', {data: 'start1'})), 0);
+    setTimeout(() => FlowManagerService.getInstance().execFlow(flowExample, new Message('test2', {data: 'start2'})), 0);
 
     log(`all nodes in the flow`, LogLevel.debug,
         {

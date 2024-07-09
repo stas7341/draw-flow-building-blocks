@@ -39,7 +39,7 @@ module.exports = {
                 "prettyPrint": true,
                 "colorize": true,
                 "timestamp": true,
-                "prefix": "iq",
+                "prefix": "flow-manager",
                 "level": process.env.DEBUG_LEVEL,
                 "max_msg_len": process.env.MAX_LOG_LENGTH || 2048
         }
