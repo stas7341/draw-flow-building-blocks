@@ -17,7 +17,7 @@ export abstract class NodeBuildingBlock extends EventEmitter{
     readonly nodeFlow: NodeFlow;
     readonly nodeType: NodeType;
     protected outputConnection!: NodeBuildingBlock[];
-    abstract exec(msg: Message);
+    abstract exec(msg: Message); // always output
     abstract outputResolver(msg: Message): NodeBuildingBlock[];
     abstract addConnection(node: NodeBuildingBlock);
     constructor(name: string, type: NodeType, flow: NodeFlow) {

@@ -1,11 +1,9 @@
 import {amqpService, Logger, LogLevel, Message} from "@asmtechno/service-lib";
 import express from "express";
-import {baseRoute, middlewares} from "./middleware/baseRoute";
-import {FLOW_EVENTS, NodeFlow } from "./models/flow";
-import { NodeType } from "./models/nodeBuildingBlock";
-import { NodeLog, NodeLog2, NodeLog3 } from "./models/nodeLog";
+import {middlewares} from "./middleware/baseRoute";
+import {FLOW_EVENTS } from "./engine/flow";
 import httpRoute from "./routes/http.route";
-import { FlowManagerService } from "./services/flowManager";
+import { FlowManagerService } from "./engine/services/flowManager";
 import { sendBaseResponse } from "./utils/responseHandler";
 
 const log = (msg: string, level: LogLevel = LogLevel.info, metadata:any = undefined) =>
@@ -41,6 +39,8 @@ export const boot = async() => {
         Logger.getInstance().log(`${app.get('env')}: server App listening on PORT ${port}...`, LogLevel.info)
     );
     Logger.getInstance().log('server started', LogLevel.info, config);
+
+    //const flowJSON = ;
 
     const flowExample = FlowManagerService.getInstance().createFlow('test', {});
 

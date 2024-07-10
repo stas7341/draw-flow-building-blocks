@@ -1,7 +1,7 @@
 import {GeneralUtils, Logger, LogLevel, Message } from "@asmtechno/service-lib";
-import {FLOW_EVENTS, INodeFlow, NodeFlow } from "../models/flow";
-import { NodeBuildingBlock, NodeType } from "../models/nodeBuildingBlock";
-import { NodeLog, NodeLog2, NodeLog3 } from "../models/nodeLog";
+import {INodeFlow, NodeFlow} from "../flow";
+import {NodeLog, NodeLog2, NodeLog3} from "../nodeLog";
+import {NodeType} from "../nodeBuildingBlock";
 
 export interface FlowManagerConfig {
 }
