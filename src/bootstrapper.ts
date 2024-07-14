@@ -40,9 +40,10 @@ export const boot = async() => {
     );
     Logger.getInstance().log('server started', LogLevel.info, config);
 
-    //const flowJSON = ;
+    // @ts-ignore
+    const flowJSON = require.main.require("./public/flows/VideoHandler.default.json");
 
-    const flowExample = FlowManagerService.getInstance().createFlow('test', {});
+    const flowExample = FlowManagerService.getInstance().createFlow('test', flowJSON);
 
     flowExample.on(FLOW_EVENTS.LOG, (...args: any[]) => {
         const [message, logLevel, metadata] = args;
